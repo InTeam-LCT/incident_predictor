@@ -1,0 +1,1 @@
+pip freeze > incident_predictor_app/requirements.txt
