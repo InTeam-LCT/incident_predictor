@@ -29,7 +29,12 @@ def predict():
 
 @app.route('/predict_for_today_and_save')
 def predict_for_today_and_save():
-    prediction_json = predict()
+    prediction_json = predictAll.predict_all(
+        str(date.today()),
+        sql_engine,
+        openmeteo,
+        models
+    )
     requests.post(f"{os.getenv('BACKEND_URL')}:{os.getenv('BACKEND_PORT')}/v0/predications/save",
                   data=prediction_json,
                   headers={'content-type': 'application/json'})
