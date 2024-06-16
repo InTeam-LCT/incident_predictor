@@ -45,8 +45,10 @@ def predict_for_today_and_save():
 
 
 def call_predict_for_today_and_save():
+    print('Making predictions for today')
     with app.test_request_context('/'):
         predict_for_today_and_save()
+    print('Writing predictions to /v0/predications/save')
 
 
 @app.route('/ping')
@@ -79,5 +81,5 @@ if __name__ == '__main__':
         model.load_model(f'models/{model_path}')
         models.append(model)
 
-    app.run(debug=False, host='0.0.0.0')
     call_predict_for_today_and_save()
+    app.run(debug=False, host='0.0.0.0')
