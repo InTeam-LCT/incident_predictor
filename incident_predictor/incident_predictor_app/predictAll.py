@@ -115,8 +115,9 @@ def add_prediction_meta_fields(
         lambda unom: get_or_else(unom, unom_to_bti_meta, 'square', None))
     prediction_df['n_flats'] = prediction_df.unom.apply(
         lambda unom: get_or_else(unom, unom_to_mkd_tech_meta, 'n_flats', None))
-    prediction_df['material'] = prediction_df.unom.apply(
-        lambda unom: get_or_else(unom, unom_to_bti_meta, 'material', None))
+    prediction_df['material'] = prediction_df.unom\
+        .apply(lambda unom: get_or_else(unom, unom_to_bti_meta, 'material', None))\
+        .apply(lambda x: x.replace('\'', '').replace('\"', ''))
     prediction_df['assignment_structure'] = prediction_df.unom.apply(
         lambda unom: get_or_else(unom, unom_to_bti_meta, 'assignment_structure', None))
     prediction_df['distance_to_moscow_center'] = prediction_df.unom.apply(

@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 from datetime import date
 from sqlalchemy import create_engine
 from catboost import CatBoostClassifier
@@ -17,11 +17,13 @@ scheduler = BackgroundScheduler(daemon=True)
 @app.route('/predict')
 def predict():
     prediction_date = request.args.get('date', default=str(date.today()))
-    return predictAll.predict_all(
-        prediction_date,
-        sql_engine,
-        openmeteo,
-        models,
+    return Response(
+        predictAll.predict_all(
+            prediction_date,
+            sql_engine,
+            openmeteo,
+            models),
+        headers={'content-type': 'application/json'}
     )
 
 
@@ -31,7 +33,10 @@ def predict_for_today_and_save():
     requests.post(f"{os.getenv('BACKEND_URL')}:{os.getenv('BACKEND_PORT')}/v0/predications/save",
                   data=prediction_json,
                   headers={'content-type': 'application/json'})
-    return prediction_json
+    return Response(
+        prediction_json,
+        headers={'content-type': 'application/json'}
+    )
 
 
 def call_predict_for_today_and_save():
@@ -44,7 +49,7 @@ def ping():
     return "pong"
 
 
-scheduler.add_job(call_predict_for_today_and_save, 'interval', minutes=10)
+scheduler.add_job(call_predict_for_today_and_save, 'interval', minutes=120)
 scheduler.start()
 
 
