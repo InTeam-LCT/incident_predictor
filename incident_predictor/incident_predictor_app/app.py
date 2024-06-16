@@ -28,7 +28,7 @@ def predict():
 @app.route('/predict_for_today_and_save')
 def predict_for_today_and_save():
     prediction_json = predict()
-    requests.post(f'http://{backend_ip}:8080/v0/predications/save',
+    requests.post(f"{os.getenv('BACKEND_URL')}:{os.getenv('BACKEND_PORT')}/v0/predications/save",
                   data=prediction_json,
                   headers={'content-type': 'application/json'})
     return prediction_json
@@ -49,11 +49,9 @@ scheduler.start()
 
 
 if __name__ == '__main__':
-    global backend_ip
-    backend_ip = os.getenv('BACKEND_IP')
     global sql_engine
     sql_engine = create_engine(
-        f"postgresql://postgres:6fg99sd6cx9m3@{backend_ip}:5432/"
+        f"postgresql://{os.getenv('BD_USER')}:{os.getenv('BD_PASS')}@{os.getenv('BD_HOST')}:{os.getenv('BD_PORT')}/"
     )
     global openmeteo
     openmeteo = openmeteo_requests.Client(
